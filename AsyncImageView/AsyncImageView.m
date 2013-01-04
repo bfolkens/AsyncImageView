@@ -503,41 +503,47 @@ NSString *const AsyncImageErrorKey = @"error";
 
 - (void)cancelLoadingURL:(NSURL *)URL target:(id)target action:(SEL)action
 {
-    for (int i = [_connections count] - 1; i >= 0; i--)
+    NSMutableArray *objectsToRemove = [NSMutableArray arrayWithCapacity:0];
+    for (AsyncImageConnection *connection in _connections)
     {
-        AsyncImageConnection *connection = [_connections objectAtIndex:i];
         if ([connection.URL isEqual:URL] && connection.target == target && connection.success == action)
         {
             [connection cancel];
-            [_connections removeObjectAtIndex:i];
+            [objectsToRemove addObject:connection];
         }
     }
+    
+    [_connections removeObjectsInArray:objectsToRemove];
 }
 
 - (void)cancelLoadingURL:(NSURL *)URL target:(id)target
 {
-    for (int i = [_connections count] - 1; i >= 0; i--)
+    NSMutableArray *objectsToRemove = [NSMutableArray arrayWithCapacity:0];
+    for (AsyncImageConnection *connection in _connections)
     {
-        AsyncImageConnection *connection = [_connections objectAtIndex:i];
         if ([connection.URL isEqual:URL] && connection.target == target)
         {
             [connection cancel];
-            [_connections removeObjectAtIndex:i];
+            [objectsToRemove addObject:connection];
         }
     }
+    
+    [_connections removeObjectsInArray:objectsToRemove];
 }
 
 - (void)cancelLoadingURL:(NSURL *)URL
 {
-    for (int i = [_connections count] - 1; i >= 0; i--)
+    NSMutableArray *objectsToRemove = [NSMutableArray arrayWithCapacity:0];
+    for (AsyncImageConnection *connection in _connections)
     {
-        AsyncImageConnection *connection = [_connections objectAtIndex:i];
         if ([connection.URL isEqual:URL])
         {
             [connection cancel];
-            [_connections removeObjectAtIndex:i];
+            [objectsToRemove addObject:connection];
         }
     }
+    
+    [_connections removeObjectsInArray:objectsToRemove];
 }
 
 - (void)cancelLoadingImagesForTarget:(id)target action:(SEL)action
